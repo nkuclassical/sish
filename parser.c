@@ -1,26 +1,30 @@
 //
-//  parser.c
-//  sish
-//
-//  Created by Yanqiao Zhan on 12/12/15.
-//  Copyright © 2015 Yanqiao Zhan. All rights reserved.
-//
+/*
+  parser.c
+  sish
+
+  Created by Yanqiao Zhan on 12/12/15.
+  Copyright © 2015 Yanqiao Zhan. All rights reserved.
+*/
 
 #include "parser.h"
-void parser(Command*command,char*rawcommand){
+int parser(char*rawcommand,Arg*arg){
     const char s[2]="|";
     char* subpath;
-    Command*head=malloc(sizeof(Command));
+    fprintf(stdout, "raw:%s\n",rawcommand);
+/*    Command*head=malloc(sizeof(Command));
+    Command*cur;
+    Command*prefix;*/
     subpath=strtok(rawcommand,s);
-    if(subpath==NULL)subpath="";
-    head->argv=subpath;
-    Command*cur=head;
-    Command*prefix=head;
     while(subpath!=NULL){
-        subpath=strtok(NULL, s);
-        cur=malloc(sizeof(Command));
+        if(arg->flag_x==1){
+            fprintf(stdout, "+ %s\n",subpath);
+        }
+/*        cur=malloc(sizeof(Command));
         cur->argv=subpath;
         prefix->next=cur;
-        prefix=cur;
+        prefix=cur;*/
+        subpath=strtok(NULL, s);
     }
+    return 0;
 }

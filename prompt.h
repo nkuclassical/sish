@@ -11,5 +11,6 @@
 
 #include <stdio.h>
 #include "define.h"
-void prompt();
+#include "parser.h"
+void prompt(Arg*arg);
 #endif /* prompt_h */

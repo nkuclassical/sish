@@ -22,11 +22,11 @@ void usage(){
             Execute the given command.\n\
             −x Enable tracing\n\
             Write each command to standard error, preceeded by ’+’\n");
+    exit(EXIT_FAILURE);
 }
 
 
 int main(int argc, char ** argv) {
-    // insert code here...
     Arg*arg=malloc(sizeof(Arg));
     char ch;
     if(argc==1){
@@ -46,10 +46,9 @@ int main(int argc, char ** argv) {
     }
     
     if((arg->rawcommand!=NULL)){
-        prompt();
+        parser(arg->rawcommand,arg);
     }else{
-        Command*command;
-        parser(command, arg->rawcommand);
+        prompt(arg);
     }
     return 0;
 }
