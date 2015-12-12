@@ -38,10 +38,10 @@ void echoCommand(char *message){
         return;
     }
     if (strcmp(message, "$?") == 0) {
-        fprintf(stderr, "The exit status of last command is: ");
+        fprintf(stdout, "The exit status of last command is: ");
         return;
     }
-    fprintf(stderr,"%s\n", message);
+    fprintf(stdout,"%s\n", message);
     return;
 }
 

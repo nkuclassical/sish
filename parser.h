@@ -13,4 +13,5 @@
 #include "define.h"
 #include "string.h"
 void parser(Command*command,char*rawcommand);
+
 #endif /* parser_h */
