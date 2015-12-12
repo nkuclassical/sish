@@ -8,8 +8,13 @@
 
 #include "prompt.h"
 
-void prompt(){
+void prompt(Arg*arg){
+    char input[1024];
     while(1){
         fprintf(stdout,"sish$ ");
+        gets(input);
+        if(parser(input,arg)!=0){
+            break;
+        }
     }
 }

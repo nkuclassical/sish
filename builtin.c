@@ -12,7 +12,10 @@
 
 
 #include "builtin.h"
-
+/*
+ Handle cd echo exit
+ */
+ 
 int cdCommand(char *path){
     /*
      Do we need to check '~','.','..'
