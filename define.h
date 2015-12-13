@@ -11,7 +11,6 @@
 
 typedef struct command{
     char*argv;
-    char**splitedargv;
     struct command*next;
 }Command;
 
