@@ -10,6 +10,9 @@
 #define process_h
 
 #include <stdio.h>
+#include <unistd.h>
+#include <sys/wait.h>
 #include "define.h"
 #include "parser.h"
+int handle(Arg*);
 #endif /* process_h */

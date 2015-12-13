@@ -10,7 +10,9 @@
 #define prompt_h
 
 #include <stdio.h>
+#include <unistd.h>
 #include "define.h"
 #include "parser.h"
+#include "process.h"
 void prompt(Arg*arg);
 #endif /* prompt_h */

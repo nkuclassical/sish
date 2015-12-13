@@ -7,14 +7,7 @@
   Copyright © 2015 Yanqiao Zhan. All rights reserved.
 */
 
-#include <stdio.h>
-#include <getopt.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include "define.h"
-#include "prompt.h"
-#include "parser.h"
+#include "sish.h"
 
 void usage(){
     fprintf(stdout,"sish [ −x] [ −c command]\n\
@@ -46,7 +39,7 @@ int main(int argc, char ** argv) {
     }
     
     if((arg->rawcommand!=NULL)){
-        parser(arg->rawcommand,arg);
+        handle(arg);
     }else{
         prompt(arg);
     }

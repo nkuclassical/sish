@@ -1,20 +1,25 @@
 /*
-  prompt.c
-  sish
-
-  Created by Yanqiao Zhan on 12/10/15.
-  Copyright © 2015 Yanqiao Zhan. All rights reserved.
-*/
+ prompt.c
+ sish
+ 
+ Created by Yanqiao Zhan on 12/10/15.
+ Copyright © 2015 Yanqiao Zhan. All rights reserved.
+ */
 
 #include "prompt.h"
 
 void prompt(Arg*arg){
     char input[1024];
     while(1){
-        fprintf(stdout,"sish$ ");
+        
+        
+        fprintf(stdout, "sish$ ");
         gets(input);
-        if(parser(input,arg)!=0){
+        arg->rawcommand=input;
+        if(handle(arg)!=0){
+            fprintf(stdout, "prompt break\n");
             break;
         }
+        
     }
 }

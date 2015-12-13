@@ -13,8 +13,9 @@
 #include <stdlib.h>
 #include "define.h"
 #include "string.h"
+#include "util.h"
 
 
-int parser(char*,Arg*);
+int parser(char*,Command allcommands[]);
 
 #endif /* parser_h */

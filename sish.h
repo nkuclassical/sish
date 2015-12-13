@@ -10,8 +10,12 @@
 #define sish_h
 
 #include <stdio.h>
-#include <stdlib.h>
+#include <getopt.h>
 #include <unistd.h>
-
+#include <stdlib.h>
+#include <string.h>
+#include "define.h"
+#include "prompt.h"
+#include "process.h"
 
 #endif /* sish_h */

@@ -1,4 +1,3 @@
-//
 /*
   parser.c
   sish
@@ -8,22 +7,14 @@
 */
 
 #include "parser.h"
-int parser(char*rawcommand,Arg*arg){
-    const char s[2]="|";
-    char* subpath;
-    Command*head=malloc(sizeof(Command));
-    Command*cur;
-    Command*prefix;
-    subpath=strtok(rawcommand,s);
-    while(subpath!=NULL){
-        if(arg->flag_x==1){
-            fprintf(stdout, "+ %s\n",subpath);
-        }
-        cur=malloc(sizeof(Command));
-        cur->argv=subpath;
-        prefix->next=cur;
-        prefix=cur;
-        subpath=strtok(NULL, s);
+int parser(char*rawcommand,Command allcommands[]){
+    char**subcommands=split(rawcommand, "|");
+    int index=0;
+    while(subcommands[index]){
+        allcommands[index].argv=malloc(sizeof(char)*(strlen(subcommands[index])+1));
+        strcpy(allcommands[index].argv, subcommands[index]);
+        allcommands[index].argv[strlen(subcommands[index])]='\0';
+        index++;
     }
-    return 0;
+    return index;
 }
