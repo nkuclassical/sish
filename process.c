@@ -53,10 +53,17 @@ int handle(Arg*arg){
     int n;
     pid_t pid;
     int status;
+    int index;
     if((pid=fork())==0){
         if((n=parser(arg->rawcommand,allcommands))==0){
             fprintf(stderr, "Parse raw command error!\n");
             exit(EXIT_FAILURE);
+        }
+        if(arg->flag_x==1){
+            index=0;
+            for(index=0;index<n;index++){
+                fprintf(stderr, "+ %s\n",allcommands[index].argv);
+            }
         }
         fork_pipes(n, allcommands);
     }else if(pid>0){
