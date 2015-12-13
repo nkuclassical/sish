@@ -16,6 +16,6 @@
 #include "util.h"
 
 
-int parser(char*,Command allcommands[]);
+int parser(char*,Command allcommands[],Arg*arg);
 
 #endif /* parser_h */

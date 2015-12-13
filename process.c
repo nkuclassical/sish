@@ -55,7 +55,7 @@ int handle(Arg*arg){
     int status;
     int index;
     if((pid=fork())==0){
-        if((n=parser(arg->rawcommand,allcommands))==0){
+        if((n=parser(arg->rawcommand,allcommands,arg))<=0){
             fprintf(stderr, "Parse raw command error!\n");
             exit(EXIT_FAILURE);
         }
@@ -63,6 +63,11 @@ int handle(Arg*arg){
             index=0;
             for(index=0;index<n;index++){
                 fprintf(stderr, "+ %s\n",allcommands[index].argv);
+            }
+        }
+        if(arg->flag_d==1){
+            if(daemon(1, 1)<0){
+                fprintf(stderr, "Daemon fails!\n");
             }
         }
         fork_pipes(n, allcommands);

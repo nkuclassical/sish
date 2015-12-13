@@ -16,6 +16,7 @@ typedef struct command{
 typedef struct argument{
     int flag_c;
     int flag_x;
+    int flag_d;/*if a command is terminated by &, the shell execute daemond*/
     char*rawcommand;
 }Arg;
 #endif /* define_h */
