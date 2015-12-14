@@ -9,7 +9,7 @@ process.o:process.c process.h define.h builtin.o parser.o
 	$(CC) -c ${CFLAGS} process.c
 parser.o:parser.c parser.h define.h util.h 
 	$(CC) -c ${CFLAGS} parser.c
-builtin.o:builtin.c builtin.h define.h
+builtin.o:builtin.c builtin.h define.h util.h
 	$(CC) -c ${CFLAGS} builtin.c
 util.o:util.c util.h
 	$(CC) -c ${CFLAGS} util.c

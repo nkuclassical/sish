@@ -11,7 +11,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <dirent.h>
+#include <string.h>
+#include <errno.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include "define.h"
+#include "util.h"
 int cdCommand(char*);
 int echoCommand(char*);
 #endif /* builtin_h */

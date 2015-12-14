@@ -1,14 +1,11 @@
 /*
-  builtin.c
-  sish
+ builtin.c
+ sish
+ 
+ Created by Yanqiao Zhan on 12/10/15.
+ Copyright © 2015 Yanqiao Zhan. All rights reserved.
+ */
 
-  Created by Yanqiao Zhan on 12/10/15.
-  Copyright © 2015 Yanqiao Zhan. All rights reserved.
-*/
-#include <dirent.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
 
 
 #include "builtin.h"
@@ -17,13 +14,32 @@
  */
 
 int exit_code;
+char*translatepath(char*path){
+    char*result=malloc(sizeof(char)*(strlen(path)+10));
+    char*temp=malloc(sizeof(char)*(strlen(path)));
+    strcpy(result, "/home/");
+    memcpy(temp, &path[1], strlen(path)-1);
+    strcat(result, temp);
+    return result;
+}
+char*translatepath2(char*path){
+    char*result;
+    char*temp=malloc(sizeof(char)*(strlen(path)));
+    char*username;
+    username=malloc(sizeof(char)*strlen(getenv("HOME")));
+    strncpy(username, getenv("HOME"), strlen(getenv("HOME")));
+    temp=malloc(sizeof(char)*(strlen(path)+10));
+    result=malloc(sizeof(char)*(strlen(path)+10+strlen(username)));
+    strcpy(result, username);
+    memcpy(temp, &path[1], strlen(path)-1);
+    strcat(result, temp);
+    return result;
+}
 int cdCommand(char *path){
-    /*
-     Undo
-     need to supportc 'cd ~' 
 
-     */
     char*envhome;
+    char**subpath;
+    struct stat s;
     if(strlen(path)==0){
         envhome=getenv("HOME");
         if(envhome==NULL){
@@ -35,19 +51,34 @@ int cdCommand(char *path){
             strncpy(path, envhome, strlen(envhome));
         }
     }
-    if(access(path,R_OK)!=0){
-        fprintf(stderr,"cd: %s: Permission denied\n",path);
-        exit_code=1;
-        return -1;
+    
+    
+    if(path[0]=='~'){
+        subpath=split(path, "/");
+        if(strcmp(subpath[0],"~")==0){
+            path=translatepath2(path);
+        }else{
+            path=translatepath(path);
+        }
     }
-    if(chdir(path) < 0){
-        fprintf(stderr,"cd: %s: No such file or directory!\n",path);
+    
+    if(stat(path, &s)==-1){
+        fprintf(stderr, "cd: %s: No such file or directory\n",path);
         exit_code=1;
-        return -1;
+    }else{
+        if(S_ISDIR(s.st_mode)){
+            if(chdir(path) < 0){
+                fprintf(stderr,"cd: %s: No such file or directory!\n",path);
+                exit_code=1;
+            }else{
+                exit_code=0;
+            }
+        }else{
+            fprintf(stderr, "cd: %s: Not a directory\n",path);
+            exit_code=1;
+        }
     }
-    /*
-     return 0 if change directory successfully.
-     */
+    
     return 0;
 }
 int echoCommand(char *message){
