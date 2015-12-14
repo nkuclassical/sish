@@ -40,8 +40,9 @@ int cdCommand(char *path){
     char*envhome;
     char**subpath;
     struct stat s;
+            envhome=getenv("HOME");
     if(strlen(path)==0){
-        envhome=getenv("HOME");
+
         if(envhome==NULL){
             fprintf(stdout, "cd: HOME not set\n");
             exit_code=1;
@@ -56,6 +57,11 @@ int cdCommand(char *path){
     if(path[0]=='~'){
         subpath=split(path, "/");
         if(strcmp(subpath[0],"~")==0){
+            if(envhome==NULL){
+                fprintf(stdout, "cd: HOME not set\n");
+                exit_code=1;
+                return -1;
+            }
             path=translatepath2(path);
         }else{
             path=translatepath(path);
