@@ -8,6 +8,7 @@
 
 #include "process.h"
 int exit_code;
+
 char* getrestpart(char*full,char*prefix){
     int i,len1=(int)strlen(full),len2=(int)strlen(prefix);
     char*ret;

@@ -14,6 +14,105 @@ int empty(char*str){
     }
     return 1;
 }
+
+int parserdirection(Command command){
+    int index=0;
+    char**subcommands;
+    int redirectoutputnum=0;
+    int appendnum=0;
+    int redirectinputnum=0;
+    int redirectoutputstart=0;
+    int appendstart=0;
+    int redirectinputstart=0;
+    int len;
+    for (index=0; index<strlen(command.argv); index++) {
+        if (command.argv[index]=='<') {
+            redirectinputnum++;
+            redirectinputstart=index;
+        }else if(command.argv[index]=='>'){
+            if(index==strlen(command.argv)-1)return -1;
+            if(command.argv[index+1]=='>'){
+                appendnum++;
+                index++;
+                appendstart=index;
+            }else{
+                redirectoutputnum++;
+                redirectoutputstart=index;
+            }
+        }
+    }
+    if(redirectinputnum>1||redirectoutputnum>1||appendnum>1){
+        return -1;
+    }
+    
+    if(redirectoutputnum==1){
+        for(index=redirectoutputstart+1;index<strlen(command.argv);index++){
+            if(command.argv[index]!=' '){
+                redirectoutputstart=index;
+                break;
+            }
+        }
+        if(index==strlen(command.argv))return -1;
+        while (index<strlen(command.argv)) {
+            if(command.argv[index]==' '||command.argv[index]=='>'||command.argv[index]=='<'){
+                break;
+            }
+            index++;
+        }
+        len=index-redirectoutputstart;
+        command.outfilepath=malloc(sizeof(char)*(len+1));
+        memcpy(command.outfilepath, &(command.argv[redirectoutputstart]), len);
+        command.outfilepath[len]='\0';
+        fprintf(stdout, "outputfile:%s\n",command.outfilepath);
+        
+    }
+    
+    if(redirectinputnum==1){
+        for(index=redirectinputstart+1;index<strlen(command.argv);index++){
+            if(command.argv[index]!=' '){
+                redirectinputstart=index;
+                break;
+            }
+        }
+        if(index==strlen(command.argv))return -1;
+        while (index<strlen(command.argv)) {
+            if(command.argv[index]==' '||command.argv[index]=='>'||command.argv[index]=='<'){
+                break;
+            }
+            index++;
+        }
+        len=index-redirectinputstart;
+        command.infilepath=malloc(sizeof(char)*(len+1));
+        memcpy(command.infilepath, &(command.argv[redirectinputstart]), len);
+        command.infilepath[len]='\0';
+        fprintf(stdout, "inputfile:%s\n",command.infilepath);
+    }
+    
+    if(appendnum==1){
+        for(index=appendstart+1;index<strlen(command.argv);index++){
+            if(command.argv[index]!=' '){
+                appendstart=index;
+                break;
+            }
+        }
+        if(index==strlen(command.argv))return -1;
+        while (index<strlen(command.argv)) {
+            if(command.argv[index]==' '||command.argv[index]=='>'||command.argv[index]=='<'){
+                break;
+            }
+            index++;
+        }
+        len=index-appendstart;
+        command.appendfilepath=malloc(sizeof(char)*(len+1));
+        memcpy(command.appendfilepath, &(command.argv[appendstart]), len);
+        command.appendfilepath[len]='\0';
+        fprintf(stdout, "appendfile:%s\n",command.appendfilepath);
+    }
+    
+    return 0;
+}
+
+
 int parser(char*rawcommand,Command allcommands[],Arg*arg){
     char**subcommands;
     int index=0;
@@ -54,6 +153,10 @@ int parser(char*rawcommand,Command allcommands[],Arg*arg){
         }else{
             return -1;
         }
+    }
+    
+    for(i=0;i<index;i++){
+        parserdirection(allcommands[i]);
     }
 
     return index;
