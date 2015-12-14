@@ -43,14 +43,12 @@ int spawn_proc (int in, int out, Command cmd){
             exit_code=0;
             execvp (splitedcommand[0], (char * const *)splitedcommand);
             exit_code=127;
-            fprintf(stdout, "exe!!!\n");
         }
     }
     
     return exit_code;
 }
-int
-fork_pipes (int n, Command cmd[]){
+int fork_pipes (int n, Command cmd[]){
     int i;
     int in, fd [2];
     char**lastsplitedcommand;
@@ -72,13 +70,11 @@ fork_pipes (int n, Command cmd[]){
         echoCommand(leftpart);
     }else if(strcmp(lastsplitedcommand[0],"cd")==0){
         cdCommand(leftpart);
-    }else if(n==1&&strcmp(lastsplitedcommand[0], "exit")==0){
-            exit(119); /*send signal to parent process, let parent also exit!*/
     }else{
         execvp (lastsplitedcommand[0], (char * const *)lastsplitedcommand);
         if(errno==2)exit_code=127;
         else exit_code=errno;
-
+        exit(exit_code);
     }
     return exit_code;
 }
@@ -89,35 +85,36 @@ int handle(Arg*arg){
     Command allcommands[128];
     int n;
     pid_t pid;
-    int status;
     int index;
-    if((pid=fork())==0){
-        if((n=parser(arg->rawcommand,allcommands,arg))<=0){
-            fprintf(stderr, "Parse raw command error!\n");
-            exit_code=127;
+    int status;
+    if((n=parser(arg->rawcommand,allcommands,arg))==-1){
+        fprintf(stderr, "syntax error!\n");
+        exit_code=127;
+        return -1;
+    }else if(n==0){
+        exit(0);
+    }
+    if(arg->flag_x==1){
+        index=0;
+        for(index=0;index<n;index++){
+            fprintf(stderr, "+ %s\n",allcommands[index].argv);
+        }
+    }
+    if(arg->flag_d==1){
+        if(daemon(1, 1)<0){
+            fprintf(stderr, "Daemon fails!\n");
+            exit_code=125;
             exit(EXIT_FAILURE);
         }
-        if(arg->flag_x==1){
-            index=0;
-            for(index=0;index<n;index++){
-                fprintf(stderr, "+ %s\n",allcommands[index].argv);
-            }
-        }
-        if(arg->flag_d==1){
-            if(daemon(1, 1)<0){
-                fprintf(stderr, "Daemon fails!\n");
-                exit_code=125;
-                exit(EXIT_FAILURE);
-            }
-        }
+    }
+    if((pid=fork())==0){
         fork_pipes(n, allcommands);
-        fprintf(stdout, "finish child\n");
     }else if(pid>0){
-        waitpid(pid, &status, 0);
+        waitpid(pid,&status,0);
         if(WIFEXITED(status)){
-            if(WEXITSTATUS(status)==119){
-
-                return -1;/*jump out from prompt while loop*/
+            if(WEXITSTATUS(status)==127){
+                fprintf(stderr, "%s: command not found\n",arg->rawcommand);
+                exit_code=127;
             }
         }
         return exit_code;
