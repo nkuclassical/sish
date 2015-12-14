@@ -95,7 +95,9 @@ int echoCommand(char *message){
     }else if (strcmp(message, "$?") == 0) {
         fprintf(stdout, "%d\n",exit_code);
     }else fprintf(stdout,"%s\n", message);
+    fflush(stdout);
     exit_code=0;
+    
     return 0;
 }
 

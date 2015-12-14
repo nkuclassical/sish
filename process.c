@@ -35,6 +35,16 @@ int spawn_proc (int in, int out, Command cmd){
             close (out);
         }
         
+        if(cmd.flag_a==1){
+            freopen(cmd.appendfilepath, "a", stdout);
+
+        }else if(cmd.flag_o==1){
+            freopen(cmd.outfilepath, "w", stdout);
+            printf("stdout change w, command%s  path%s\n",cmd.argv,cmd.outfilepath);
+        }
+        if(cmd.flag_i==1){
+            freopen(cmd.infilepath, "r", stdin);
+        }
         exit_code=0;
         execvp (splitedcommand[0], (char * const *)splitedcommand);
         exit_code=127;
@@ -58,7 +68,16 @@ int fork_pipes (int n, Command cmd[]){
     if (in != 0)
         dup2 (in, 0);
     lastsplitedcommand=split(cmd[i].argv, " ");
-    
+    if(cmd[i].flag_a==1){
+        freopen(cmd[i].appendfilepath, "a", stdout);
+    }else if(cmd[i].flag_o==1){
+        freopen(cmd[i].outfilepath, "w", stdout);
+        printf("stdout change w, command%s  path%s\n",cmd[i].argv,cmd[i].outfilepath);
+    }
+    if(cmd[i].flag_i==1){
+        freopen(cmd[i].infilepath, "r", stdin);
+    }
+    printf("haha %s\n",cmd[i].outfilepath);
     execvp (lastsplitedcommand[0], (char * const *)lastsplitedcommand);
     if(errno==2)exit_code=127;
     else exit_code=errno;
@@ -99,11 +118,16 @@ int handle(Arg*arg){
     }
     
     
+    
     splitedcommand=split(allcommands[0].argv, " ");
     
     leftpart=getrestpart(allcommands[0].argv, splitedcommand[0]);
+    
+    
     if(strcmp(splitedcommand[0], "echo")==0){
+        
         echoCommand(leftpart);
+        
     }else if(strcmp(splitedcommand[0],"cd")==0){
         cdCommand(leftpart);
     }else{
@@ -121,5 +145,6 @@ int handle(Arg*arg){
             return exit_code;
         }
     }
+    
     return 0;
 }

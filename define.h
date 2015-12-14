@@ -12,7 +12,7 @@
 typedef struct command{
     char*argv;
     int flag_a;/*append standard output*/
-    int flag_r;/*redirect standard output*/
+    int flag_o;/*redirect standard output*/
     int flag_i;/*redirect standard input*/
     char*infilepath;/*redirection input(<)*/
     char*outfilepath;/*redirection output(>)*/
