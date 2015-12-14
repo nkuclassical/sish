@@ -16,7 +16,7 @@ typedef struct command{
     int flag_i;/*redirect standard input*/
     char*infilepath;/*redirection input(<)*/
     char*outfilepath;/*redirection output(>)*/
-    char*appendfilepath/*append output(>>)*/
+    char*appendfilepath;/*append output(>>)*/
 }Command;
 
 typedef struct argument{

@@ -17,7 +17,6 @@ int empty(char*str){
 
 int parserdirection(Command command){
     int index=0;
-    char**subcommands;
     int redirectoutputnum=0;
     int appendnum=0;
     int redirectinputnum=0;
