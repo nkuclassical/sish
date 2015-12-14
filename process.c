@@ -24,7 +24,6 @@ char* getrestpart(char*full,char*prefix){
 int spawn_proc (int in, int out, Command cmd){
     pid_t pid;
     char**splitedcommand=split(cmd.argv, " ");
-    char*leftpart;
     if ((pid = fork ()) == 0){
         if (in != 0){
             dup2 (in, 0);
@@ -34,16 +33,11 @@ int spawn_proc (int in, int out, Command cmd){
             dup2 (out, 1);
             close (out);
         }
-        leftpart=getrestpart(cmd.argv, splitedcommand[0]);
-        if(strcmp(splitedcommand[0], "echo")==0){
-            echoCommand(leftpart);
-        }else if(strcmp(splitedcommand[0],"cd")==0){
-            cdCommand(leftpart);
-        }else{
-            exit_code=0;
-            execvp (splitedcommand[0], (char * const *)splitedcommand);
-            exit_code=127;
-        }
+        
+        exit_code=0;
+        execvp (splitedcommand[0], (char * const *)splitedcommand);
+        exit_code=127;
+        exit(exit_code);
     }
     
     return exit_code;
@@ -52,7 +46,6 @@ int fork_pipes (int n, Command cmd[]){
     int i;
     int in, fd [2];
     char**lastsplitedcommand;
-    char*leftpart;
     in = 0;
     for (i = 0; i < n - 1; ++i){
         pipe (fd);
@@ -65,17 +58,11 @@ int fork_pipes (int n, Command cmd[]){
         dup2 (in, 0);
     lastsplitedcommand=split(cmd[i].argv, " ");
     
-    leftpart=getrestpart(cmd[i].argv, lastsplitedcommand[0]);
-    if(strcmp(lastsplitedcommand[0], "echo")==0){
-        echoCommand(leftpart);
-    }else if(strcmp(lastsplitedcommand[0],"cd")==0){
-        cdCommand(leftpart);
-    }else{
-        execvp (lastsplitedcommand[0], (char * const *)lastsplitedcommand);
-        if(errno==2)exit_code=127;
-        else exit_code=errno;
-        exit(exit_code);
-    }
+    execvp (lastsplitedcommand[0], (char * const *)lastsplitedcommand);
+    if(errno==2)exit_code=127;
+    else exit_code=errno;
+    exit(exit_code);
+    
     return exit_code;
 }
 
@@ -86,6 +73,8 @@ int handle(Arg*arg){
     int n;
     pid_t pid;
     int index;
+    char**splitedcommand;
+    char*leftpart;
     int status;
     if((n=parser(arg->rawcommand,allcommands,arg))==-1){
         fprintf(stderr, "syntax error!\n");
@@ -107,17 +96,29 @@ int handle(Arg*arg){
             exit(EXIT_FAILURE);
         }
     }
-    if((pid=fork())==0){
-        fork_pipes(n, allcommands);
-    }else if(pid>0){
-        waitpid(pid,&status,0);
-        if(WIFEXITED(status)){
-            if(WEXITSTATUS(status)==127){
-                fprintf(stderr, "%s: command not found\n",arg->rawcommand);
-                exit_code=127;
+    
+    
+    splitedcommand=split(allcommands[0].argv, " ");
+    
+    leftpart=getrestpart(allcommands[0].argv, splitedcommand[0]);
+    if(strcmp(splitedcommand[0], "echo")==0){
+        echoCommand(leftpart);
+    }else if(strcmp(splitedcommand[0],"cd")==0){
+        cdCommand(leftpart);
+    }else{
+        if((pid=fork())==0){
+            fork_pipes(n, allcommands);
+            exit(exit_code);
+        }else if(pid>0){
+            waitpid(pid,&status,0);
+            if(WIFEXITED(status)){
+                if(WEXITSTATUS(status)==127){
+                    fprintf(stderr, "%s: command not found\n",arg->rawcommand);
+                    exit_code=127;
+                }
             }
+            return exit_code;
         }
-        return exit_code;
     }
     return 0;
 }

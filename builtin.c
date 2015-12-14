@@ -20,9 +20,21 @@ int exit_code;
 int cdCommand(char *path){
     /*
      Undo
-     need to supportc 'cd ~' and 'cd'
+     need to supportc 'cd ~' 
 
      */
+    char*envhome;
+    if(strlen(path)==0){
+        envhome=getenv("HOME");
+        if(envhome==NULL){
+            fprintf(stdout, "cd: HOME not set\n");
+            exit_code=1;
+            return -1;
+        }else{
+            path=malloc(sizeof(char)*strlen(envhome));
+            strncpy(path, envhome, strlen(envhome));
+        }
+    }
     if(access(path,R_OK)!=0){
         fprintf(stderr,"cd: %s: Permission denied\n",path);
         exit_code=1;
