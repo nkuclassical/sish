@@ -15,17 +15,22 @@
 /*
  Handle cd echo exit
  */
- 
+
+int exit_code;
 int cdCommand(char *path){
     /*
-     Do we need to check '~','.','..'
+     Undo
+     need to supportc 'cd ~' and 'cd'
+
      */
     if(access(path,R_OK)!=0){
-        fprintf(stderr,"Can't access %s\n",path);
+        fprintf(stderr,"cd: %s: Permission denied\n",path);
+        exit_code=1;
         return -1;
     }
     if(chdir(path) < 0){
-        fprintf(stderr,"Change to directory: %s failed!\n",path);
+        fprintf(stderr,"cd: %s: No such file or directory!\n",path);
+        exit_code=1;
         return -1;
     }
     /*
@@ -33,19 +38,18 @@ int cdCommand(char *path){
      */
     return 0;
 }
-void echoCommand(char *message){
+int echoCommand(char *message){
     pid_t pid;
-    
     if (strcmp(message,"$$") == 0) {
         pid = getpid();
-        return;
-    }
-    if (strcmp(message, "$?") == 0) {
-        fprintf(stdout, "The exit status of last command is: ");
-        return;
-    }
-    fprintf(stdout,"%s\n", message);
-    return;
+        fprintf(stdout, "%d\n",pid);
+    }else if (strcmp(message, "$?") == 0) {
+        fprintf(stdout, "%d\n",exit_code);
+    }else fprintf(stdout,"%s\n", message);
+    exit_code=0;
+    return 0;
 }
+
+
 
 

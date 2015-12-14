@@ -12,7 +12,9 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <errno.h>
 #include "define.h"
 #include "parser.h"
+#include "builtin.h"
 int handle(Arg*);
 #endif /* process_h */

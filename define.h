@@ -19,4 +19,6 @@ typedef struct argument{
     int flag_d;/*if a command is terminated by &, the shell execute daemond*/
     char*rawcommand;
 }Arg;
+
+extern int exit_code;
 #endif /* define_h */

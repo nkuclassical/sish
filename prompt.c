@@ -8,16 +8,16 @@
 
 #include "prompt.h"
 
+
 void prompt(Arg*arg){
     char input[1024];
+    int exit_code=0;
     while(1){
-        
-        
         fprintf(stdout, "sish$ ");
         gets(input);
         arg->rawcommand=input;
-        if(handle(arg)!=0){
-            fprintf(stdout, "prompt break\n");
+        exit_code=handle(arg);
+        if(exit_code==-1){
             break;
         }
         

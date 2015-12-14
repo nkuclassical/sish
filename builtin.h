@@ -10,6 +10,8 @@
 #define builtin_h
 
 #include <stdio.h>
+#include <stdlib.h>
+#include "define.h"
 int cdCommand(char*);
-void echoCommand(char*);
+int echoCommand(char*);
 #endif /* builtin_h */
