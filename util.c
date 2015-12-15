@@ -12,7 +12,7 @@ char** split(char*str,char*delim){
     char*sub;
     int index=0;
     char**ret;
-    
+    char*temp;
     char*newstr;
     if(str==NULL)exit(EXIT_FAILURE);
     ret=malloc(256*(int)sizeof(char*));
@@ -21,12 +21,31 @@ char** split(char*str,char*delim){
     strcpy(newstr, str);
     sub=strtok(newstr,delim);
     while(sub){
+        temp=trim(sub);
         ret[index]=malloc(256*sizeof(char));
-        strncpy(ret[index],sub,strlen(sub));
+        strncpy(ret[index],temp,strlen(temp));
         index++;
         sub=strtok(NULL,delim);
     }
     return ret;
 }
 
+char*trim(char*str){
+    int startindex=0;
+    int endindex=(int)strlen(str);
+    int i=0;
+    char *retstr;
+    for(i=0;i<strlen(str);i++){
+        if(str[i]!=' ')break;
+    }
+    startindex=i;
+    for(i=(int)strlen(str)-1;i>startindex;i--){
+        if(str[i]!=' ')break;
+    }
+    endindex=i;
+    retstr=malloc(sizeof(char)*(endindex-startindex+2));
+    memcpy(retstr, &str[startindex], endindex-startindex+1);
+    retstr[endindex-startindex+1]='\0';
+    return retstr;
+}
 

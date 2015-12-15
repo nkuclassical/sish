@@ -13,4 +13,5 @@
 #include <string.h>
 #include <stdlib.h>
 char** split(char*,char*);
+char*trim(char*);
 #endif /* util_h */
