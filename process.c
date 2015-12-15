@@ -123,8 +123,10 @@ int handle(Arg*arg){
         
         if((pid=fork())==0){
             if(strcmp(splitedcommand[0], "echo")==0){
+                printf("in echo part\n");
                 if(allcommands[0].flag_a==1){
                     freopen(allcommands[0].appendfilepath, "a", stdout);
+                    
                 }else if(allcommands[0].flag_o==1){
                     freopen(allcommands[0].outfilepath, "w", stdout);
                 }

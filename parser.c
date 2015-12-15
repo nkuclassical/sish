@@ -15,7 +15,6 @@ int empty(char*str){
     return 1;
 }
 
-
 int parserdirection(Command *command){
     int index=0;
     int redirectoutputnum=0;
@@ -114,7 +113,8 @@ int parserdirection(Command *command){
         command->appendfilepath=malloc(sizeof(char)*(len+1));
         memcpy(command->appendfilepath, &(command->argv[appendstart]), len);
         command->appendfilepath[len]='\0';
-        if(command->flag_o==1&&appendstart>redirectoutputstart){ /*only if >> appears after >, then >> will be efficient*/
+        if(appendstart>redirectoutputstart){ /*only if >> appears after >, then >> will be efficient*/
+
             command->flag_a=1;
             command->flag_o=0;
         }
