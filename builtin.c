@@ -36,11 +36,11 @@ char*translatepath2(char*path){
     return result;
 }
 int cdCommand(char *path){
-
+    
     char*envhome;
     char**subpath;
     struct stat s;
-            envhome=getenv("HOME");
+    envhome=getenv("HOME");
     if(strlen(path)==0){
         if(envhome==NULL){
             fprintf(stdout, "cd: HOME not set\n");
@@ -66,24 +66,30 @@ int cdCommand(char *path){
             path=translatepath(path);
         }
     }
-    
-    if(stat(path, &s)==-1){
-        fprintf(stderr, "cd: %s: No such file or directory\n",path);
-        exit_code=1;
-    }else{
-        if(S_ISDIR(s.st_mode)){
-            if(chdir(path) < 0){
+
+    /*
+        errno meaning of chdir http://www.gnu.org/software/libc/manual/html_node/File-Name-Errors.html#File-Name-Errors
+     */
+    if(chdir(path) < 0){
+        exit_code=errno;
+        switch (errno) {
+            case EACCES:
+                fprintf(stderr, "cd: %s: Permission Denied!\n",path);
+                break;
+            case ENOENT:
                 fprintf(stderr,"cd: %s: No such file or directory!\n",path);
-                exit_code=1;
-            }else{
-                exit_code=0;
-            }
-        }else{
-            fprintf(stderr, "cd: %s: Not a directory\n",path);
-            exit_code=1;
+                break;
+            case ENOTDIR:
+                fprintf(stderr, "cd: %s: It is not a directory!\n",path);
+                break;
+            case ELOOP:
+                fprintf(stderr, "cd: %s: Too many symbolic links were solved!\n",path);
+            default:
+                fprintf(stderr, "cd: %s: Failed to change directory!\n",path);
+                break;
         }
+ 
     }
-    
     return 0;
 }
 int echoCommand(char *message){
