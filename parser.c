@@ -15,6 +15,7 @@ int empty(char*str){
     return 1;
 }
 
+
 int parserdirection(Command *command){
     int index=0;
     int redirectoutputnum=0;
