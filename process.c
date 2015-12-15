@@ -21,7 +21,20 @@ char* getrestpart(char*full,char*prefix){
     strncpy(ret, full+i, len1-i);
     return ret;
 }
-
+/*
+ change stdin and stdout, according to redirection guide.
+ */
+void changestd(Command cmd){
+    if(cmd.flag_a==1){
+        freopen(cmd.appendfilepath, "a", stdout);
+        
+    }else if(cmd.flag_o==1){
+        freopen(cmd.outfilepath, "w", stdout);
+    }
+    if(cmd.flag_i==1){
+        freopen(cmd.infilepath, "r", stdin);
+    }
+}
 int spawn_proc (int in, int out, Command cmd){
     pid_t pid;
     char**splitedcommand=split(cmd.argv, " ");
@@ -34,16 +47,7 @@ int spawn_proc (int in, int out, Command cmd){
             dup2 (out, 1);
             close (out);
         }
-        
-        if(cmd.flag_a==1){
-            freopen(cmd.appendfilepath, "a", stdout);
-            
-        }else if(cmd.flag_o==1){
-            freopen(cmd.outfilepath, "w", stdout);
-        }
-        if(cmd.flag_i==1){
-            freopen(cmd.infilepath, "r", stdin);
-        }
+        changestd(cmd);
         exit_code=0;
         execvp (splitedcommand[0], (char * const *)splitedcommand);
         exit_code=127;
@@ -67,14 +71,7 @@ int fork_pipes (int n, Command cmd[]){
     if (in != 0)
         dup2 (in, 0);
     lastsplitedcommand=split(cmd[i].argv, " ");
-    if(cmd[i].flag_a==1){
-        freopen(cmd[i].appendfilepath, "a", stdout);
-    }else if(cmd[i].flag_o==1){
-        freopen(cmd[i].outfilepath, "w", stdout);
-    }
-    if(cmd[i].flag_i==1){
-        freopen(cmd[i].infilepath, "r", stdin);
-    }
+    changestd(cmd[i]);
     execvp (lastsplitedcommand[0], (char * const *)lastsplitedcommand);
     if(errno==2)exit_code=127;
     else exit_code=errno;
@@ -123,15 +120,7 @@ int handle(Arg*arg){
         
         if((pid=fork())==0){
             if(strcmp(splitedcommand[0], "echo")==0){
-                if(allcommands[0].flag_a==1){
-                    freopen(allcommands[0].appendfilepath, "a", stdout);
-                    
-                }else if(allcommands[0].flag_o==1){
-                    freopen(allcommands[0].outfilepath, "w", stdout);
-                }
-                if(allcommands[0].flag_i==1){
-                    freopen(allcommands[0].infilepath, "r", stdin);
-                }
+                changestd(allcommands[0]);
                 echoCommand(leftpart);
                 exit(exit_code);
             }else{
@@ -147,9 +136,7 @@ int handle(Arg*arg){
                 }
             }
             return exit_code;
-            
         }
     }
-    
     return 0;
 }

@@ -39,7 +39,6 @@ int cdCommand(char *path){
     
     char*envhome;
     char**subpath;
-    struct stat s;
     envhome=getenv("HOME");
     if(strlen(path)==0){
         if(envhome==NULL){
@@ -88,10 +87,10 @@ int cdCommand(char *path){
                 fprintf(stderr, "cd: %s: Failed to change directory!\n",path);
                 break;
         }
- 
     }
     return 0;
 }
+
 int echoCommand(char *message){
     pid_t pid;
     if (strcmp(message,"$$") == 0) {
@@ -102,7 +101,6 @@ int echoCommand(char *message){
     }else fprintf(stdout,"%s\n", message);
     fflush(stdout);
     exit_code=0;
-    
     return 0;
 }
 

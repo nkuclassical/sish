@@ -174,6 +174,5 @@ int parser(char*rawcommand,Command allcommands[],Arg*arg){
         if(parserdirection(&allcommands[i])==-1)return -1;
     }
     
-    
     return index;
 }

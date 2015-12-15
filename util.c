@@ -8,6 +8,11 @@
 
 #include "util.h"
 
+void *Malloc(size_t size){
+    void*ret=malloc(size);
+    if(ret==NULL)exit(1);
+    return ret;
+}
 char** split(char*str,char*delim){
     char*sub;
     int index=0;
@@ -15,9 +20,8 @@ char** split(char*str,char*delim){
     char*temp;
     char*newstr;
     if(str==NULL)exit(EXIT_FAILURE);
-    ret=malloc(256*(int)sizeof(char*));
-    newstr=malloc(sizeof(char)*strlen(str));
-    
+    ret=Malloc(256*(int)sizeof(char*));
+    newstr=Malloc(sizeof(char)*strlen(str));
     strcpy(newstr, str);
     sub=strtok(newstr,delim);
     while(sub){
