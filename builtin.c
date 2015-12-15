@@ -42,7 +42,6 @@ int cdCommand(char *path){
     struct stat s;
             envhome=getenv("HOME");
     if(strlen(path)==0){
-
         if(envhome==NULL){
             fprintf(stdout, "cd: HOME not set\n");
             exit_code=1;

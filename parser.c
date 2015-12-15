@@ -33,10 +33,10 @@ int parserdirection(Command *command){
         if (command->argv[index]=='<') {
             redirectinputnum++;
             redirectinputstart=index;
-            if(index<arglength)arglength=index-1;
+            if(index<arglength)arglength=index;
         }else if(command->argv[index]=='>'){
             if(index==strlen(command->argv)-1)return -1;
-            if(index<arglength)arglength=index-1;
+            if(index<arglength)arglength=index;
             if(command->argv[index+1]=='>'){
                 appendnum++;
                 index++;
@@ -173,9 +173,6 @@ int parser(char*rawcommand,Command allcommands[],Arg*arg){
         if(parserdirection(&allcommands[i])==-1)return -1;
     }
     
-    for(i=0;i<index;i++){
-        printf("output:%s!   appendfile:%s!  inputfile%s!\n",allcommands[i].outfilepath,allcommands[i].appendfilepath,allcommands[i].infilepath);
-    }
     
     return index;
 }

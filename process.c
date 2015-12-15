@@ -37,10 +37,9 @@ int spawn_proc (int in, int out, Command cmd){
         
         if(cmd.flag_a==1){
             freopen(cmd.appendfilepath, "a", stdout);
-
+            
         }else if(cmd.flag_o==1){
             freopen(cmd.outfilepath, "w", stdout);
-            printf("stdout change w, command%s  path%s\n",cmd.argv,cmd.outfilepath);
         }
         if(cmd.flag_i==1){
             freopen(cmd.infilepath, "r", stdin);
@@ -72,12 +71,10 @@ int fork_pipes (int n, Command cmd[]){
         freopen(cmd[i].appendfilepath, "a", stdout);
     }else if(cmd[i].flag_o==1){
         freopen(cmd[i].outfilepath, "w", stdout);
-        printf("stdout change w, command%s  path%s\n",cmd[i].argv,cmd[i].outfilepath);
     }
     if(cmd[i].flag_i==1){
         freopen(cmd[i].infilepath, "r", stdin);
     }
-    printf("haha %s\n",cmd[i].outfilepath);
     execvp (lastsplitedcommand[0], (char * const *)lastsplitedcommand);
     if(errno==2)exit_code=127;
     else exit_code=errno;
@@ -117,23 +114,29 @@ int handle(Arg*arg){
         }
     }
     
-    
-    
     splitedcommand=split(allcommands[0].argv, " ");
-    
     leftpart=getrestpart(allcommands[0].argv, splitedcommand[0]);
     
-    
-    if(strcmp(splitedcommand[0], "echo")==0){
-        
-        echoCommand(leftpart);
-        
-    }else if(strcmp(splitedcommand[0],"cd")==0){
+    if(strcmp(splitedcommand[0],"cd")==0){
         cdCommand(leftpart);
     }else{
+        
         if((pid=fork())==0){
-            fork_pipes(n, allcommands);
-            exit(exit_code);
+            if(strcmp(splitedcommand[0], "echo")==0){
+                if(allcommands[0].flag_a==1){
+                    freopen(allcommands[0].appendfilepath, "a", stdout);
+                }else if(allcommands[0].flag_o==1){
+                    freopen(allcommands[0].outfilepath, "w", stdout);
+                }
+                if(allcommands[0].flag_i==1){
+                    freopen(allcommands[0].infilepath, "r", stdin);
+                }
+                echoCommand(leftpart);
+                exit(exit_code);
+            }else{
+                fork_pipes(n, allcommands);
+                exit(exit_code);
+            }
         }else if(pid>0){
             waitpid(pid,&status,0);
             if(WIFEXITED(status)){
@@ -143,6 +146,7 @@ int handle(Arg*arg){
                 }
             }
             return exit_code;
+            
         }
     }
     

@@ -8,7 +8,7 @@
 */
 
 #include "sish.h"
- 
+
 void usage(){
     fprintf(stdout,"sish [ −x] [ −c command]\n\
             −c command\
