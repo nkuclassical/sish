@@ -14,6 +14,8 @@
  */
 
 int exit_code;
+
+/*handle normal cd case*/
 char*translatepath(char*path){
     char*result=Malloc(sizeof(char)*(strlen(path)+10));
     char*temp=Malloc(sizeof(char)*(strlen(path)));
@@ -22,6 +24,8 @@ char*translatepath(char*path){
     strcat(result, temp);
     return result;
 }
+
+/*handle cd ~[username]/ */
 char*translatepath2(char*path){
     char*result;
     char*temp=Malloc(sizeof(char)*(strlen(path)));
@@ -99,7 +103,11 @@ int echoCommand(char *message){
         fprintf(stdout, "%d\n",pid);
     }else if (strcmp(message, "$?") == 0) {
         fprintf(stdout, "%d\n",exit_code);
-    }else fprintf(stdout,"%s\n", message);
+    }else{
+        if(strlen(message)>2&&(message[0]=='-'&&message[1]=='n')){
+            fprintf(stdout, "%s",message);
+        }else fprintf(stdout,"%s\n", message);
+    }
     fflush(stdout);
     exit_code=0;
     return 0;
