@@ -18,6 +18,7 @@ void prompt(Arg*arg){
         signal(SIGINT,avoidctrlc);/*SIGINT is produced by Ctrl+C*/
         fprintf(stdout, "sish$ ");
         fgets(input,1024,stdin);
+        input[strlen(input)-1]='\0';/*remove \n tag */
         if(strlen(input)==0){
             continue;
         }
