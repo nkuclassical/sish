@@ -13,7 +13,7 @@ Addition: jwang81 pushed some code to another git repository
 create this new repository(https://github.com/nkuclassical/sish). 
 
 yzhan14 moved all code from old repository to the new repository, so some 
-commits from jwang81 may be ignored.
+commits(2 commits/ 164++/ 9--) from jwang81 are missed.
 
 Referrences:
 http://man7.org/linux/man-pages/man2/pipe.2.html
