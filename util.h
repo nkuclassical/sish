@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "define.h"
 char** split(char*,char*);
 char*trim(char*);
+void *Malloc(size_t);
 #endif /* util_h */

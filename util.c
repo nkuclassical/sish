@@ -8,9 +8,13 @@
 
 #include "util.h"
 
+int exit_code;
 void *Malloc(size_t size){
     void*ret=malloc(size);
-    if(ret==NULL)exit(1);
+    if(ret==NULL){
+        exit_code=1;
+        exit(1);
+    }
     return ret;
 }
 char** split(char*str,char*delim){
@@ -26,7 +30,7 @@ char** split(char*str,char*delim){
     sub=strtok(newstr,delim);
     while(sub){
         temp=trim(sub);
-        ret[index]=malloc(256*sizeof(char));
+        ret[index]=Malloc(256*sizeof(char));
         strncpy(ret[index],temp,strlen(temp));
         index++;
         sub=strtok(NULL,delim);
@@ -47,7 +51,7 @@ char*trim(char*str){
         if(str[i]!=' ')break;
     }
     endindex=i;
-    retstr=malloc(sizeof(char)*(endindex-startindex+2));
+    retstr=Malloc(sizeof(char)*(endindex-startindex+2));
     memcpy(retstr, &str[startindex], endindex-startindex+1);
     retstr[endindex-startindex+1]='\0';
     return retstr;

@@ -15,8 +15,8 @@
 
 int exit_code;
 char*translatepath(char*path){
-    char*result=malloc(sizeof(char)*(strlen(path)+10));
-    char*temp=malloc(sizeof(char)*(strlen(path)));
+    char*result=Malloc(sizeof(char)*(strlen(path)+10));
+    char*temp=Malloc(sizeof(char)*(strlen(path)));
     strcpy(result, "/home/");
     memcpy(temp, &path[1], strlen(path)-1);
     strcat(result, temp);
@@ -24,12 +24,12 @@ char*translatepath(char*path){
 }
 char*translatepath2(char*path){
     char*result;
-    char*temp=malloc(sizeof(char)*(strlen(path)));
+    char*temp=Malloc(sizeof(char)*(strlen(path)));
     char*username;
-    username=malloc(sizeof(char)*strlen(getenv("HOME")));
+    username=Malloc(sizeof(char)*strlen(getenv("HOME")));
     strncpy(username, getenv("HOME"), strlen(getenv("HOME")));
-    temp=malloc(sizeof(char)*(strlen(path)+10));
-    result=malloc(sizeof(char)*(strlen(path)+10+strlen(username)));
+    temp=Malloc(sizeof(char)*(strlen(path)+10));
+    result=Malloc(sizeof(char)*(strlen(path)+10+strlen(username)));
     strcpy(result, username);
     memcpy(temp, &path[1], strlen(path)-1);
     strcat(result, temp);
@@ -46,7 +46,7 @@ int cdCommand(char *path){
             exit_code=1;
             return -1;
         }else{
-            path=malloc(sizeof(char)*strlen(envhome));
+            path=Malloc(sizeof(char)*strlen(envhome));
             strncpy(path, envhome, strlen(envhome));
         }
     }
@@ -88,6 +88,7 @@ int cdCommand(char *path){
                 break;
         }
     }
+    exit_code=0;
     return 0;
 }
 

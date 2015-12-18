@@ -20,7 +20,7 @@ void usage(){
 
 
 int main(int argc, char ** argv) {
-    Arg*arg=malloc(sizeof(Arg));
+    Arg*arg=Malloc(sizeof(Arg));
     char ch;
     if(argc==1){
         arg->flag_c=0;

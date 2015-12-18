@@ -17,14 +17,14 @@ char* getrestpart(char*full,char*prefix){
             break;
         }
     }
-    ret=malloc(sizeof(char)*(len1-i+1));
+    ret=Malloc(sizeof(char)*(len1-i+1));
     strncpy(ret, full+i, len1-i);
     return ret;
 }
 /*
  change stdin and stdout, according to redirection guide.
  */
-void changestd(Command cmd){
+void changestdio(Command cmd){
     if(cmd.flag_a==1){
         freopen(cmd.appendfilepath, "a", stdout);
         
@@ -35,7 +35,7 @@ void changestd(Command cmd){
         freopen(cmd.infilepath, "r", stdin);
     }
 }
-int spawn_proc (int in, int out, Command cmd){
+int handle_each_pipe (int in, int out, Command cmd){
     pid_t pid;
     char**splitedcommand=split(cmd.argv, " ");
     if ((pid = fork ()) == 0){
@@ -47,23 +47,24 @@ int spawn_proc (int in, int out, Command cmd){
             dup2 (out, 1);
             close (out);
         }
-        changestd(cmd);
+        changestdio(cmd);
         exit_code=0;
-        execvp (splitedcommand[0], (char * const *)splitedcommand);
-        exit_code=127;
-        exit(exit_code);
+        if(execvp (splitedcommand[0], (char * const *)splitedcommand)!=0){
+            exit_code=127;
+            exit(exit_code);
+        }
     }
     
     return exit_code;
 }
-int fork_pipes (int n, Command cmd[]){
+int handle_pipe (int n, Command cmd[]){
     int i;
     int in, fd [2];
     char**lastsplitedcommand;
     in = 0;
     for (i = 0; i < n - 1; ++i){
         pipe (fd);
-        spawn_proc (in, fd [1], cmd[i]);
+        handle_each_pipe (in, fd [1], cmd[i]);
         close (fd [1]);
         in = fd [0];
     }
@@ -71,19 +72,19 @@ int fork_pipes (int n, Command cmd[]){
     if (in != 0)
         dup2 (in, 0);
     lastsplitedcommand=split(cmd[i].argv, " ");
-    changestd(cmd[i]);
-    execvp (lastsplitedcommand[0], (char * const *)lastsplitedcommand);
-    if(errno==2)exit_code=127;
-    else exit_code=errno;
-    exit(exit_code);
-    
+    changestdio(cmd[i]);
+    exit_code=0;
+    if(execvp (lastsplitedcommand[0], (char * const *)lastsplitedcommand)!=0){
+        exit_code=127;
+        exit(exit_code);
+    }
     return exit_code;
 }
 
 
 int handle(Arg*arg){
     
-    Command allcommands[128];
+    Command allcommands[128]; /*support at most 128 pipeline*/
     int n;
     pid_t pid;
     int index;
@@ -120,11 +121,11 @@ int handle(Arg*arg){
         
         if((pid=fork())==0){
             if(strcmp(splitedcommand[0], "echo")==0){
-                changestd(allcommands[0]);
+                changestdio(allcommands[0]);
                 echoCommand(leftpart);
                 exit(exit_code);
             }else{
-                fork_pipes(n, allcommands);
+                handle_pipe(n, allcommands);
                 exit(exit_code);
             }
         }else if(pid>0){
@@ -134,6 +135,8 @@ int handle(Arg*arg){
                     fprintf(stderr, "%s: command not found\n",arg->rawcommand);
                     exit_code=127;
                 }
+                else exit_code=WEXITSTATUS(status);
+                
             }
             return exit_code;
         }

@@ -66,7 +66,7 @@ int parserdirection(Command *command){
             index++;
         }
         len=index-redirectoutputstart;
-        command->outfilepath=malloc(sizeof(char)*(len+1));
+        command->outfilepath=Malloc(sizeof(char)*(len+1));
         memcpy(command->outfilepath, &(command->argv[redirectoutputstart]), len);
         command->outfilepath[len]='\0';
         command->flag_o=1;
@@ -89,7 +89,7 @@ int parserdirection(Command *command){
             index++;
         }
         len=index-redirectinputstart;
-        command->infilepath=malloc(sizeof(char)*(len+1));
+        command->infilepath=Malloc(sizeof(char)*(len+1));
         memcpy(command->infilepath, &(command->argv[redirectinputstart]), len);
         command->infilepath[len]='\0';
         command->flag_i=1;
@@ -110,7 +110,7 @@ int parserdirection(Command *command){
             index++;
         }
         len=index-appendstart;
-        command->appendfilepath=malloc(sizeof(char)*(len+1));
+        command->appendfilepath=Malloc(sizeof(char)*(len+1));
         memcpy(command->appendfilepath, &(command->argv[appendstart]), len);
         command->appendfilepath[len]='\0';
         if(appendstart>redirectoutputstart){ /*only if >> appears after >, then >> will be efficient*/
@@ -119,7 +119,7 @@ int parserdirection(Command *command){
             command->flag_o=0;
         }
     }
-    newcommandcontent=malloc(sizeof(char)*(arglength+1));
+    newcommandcontent=Malloc(sizeof(char)*(arglength+1));
     strncpy(newcommandcontent, command->argv, arglength);
     newcommandcontent[arglength]='\0';
     strcpy(command->argv, newcommandcontent);
@@ -137,7 +137,7 @@ int parser(char*rawcommand,Command allcommands[],Arg*arg){
     if(rawcommand[len-1]=='|')return -1;
     subcommands=split(rawcommand, "|");
     while(subcommands[index]){
-        allcommands[index].argv=malloc(sizeof(char)*(strlen(subcommands[index])+1));
+        allcommands[index].argv=Malloc(sizeof(char)*(strlen(subcommands[index])+1));
         strcpy(allcommands[index].argv, subcommands[index]);
         allcommands[index].argv[strlen(subcommands[index])]='\0';
         index++;
