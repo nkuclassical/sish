@@ -17,7 +17,7 @@ void prompt(Arg*arg){
     while(1){
         signal(SIGINT,avoidctrlc);/*SIGINT is produced by Ctrl+C*/
         fprintf(stdout, "sish$ ");
-        gets(input);
+        fgets(input,1024,stdin);
         if(strlen(input)==0){
             continue;
         }

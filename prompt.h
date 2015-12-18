@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <signal.h>
 #include "define.h"
 #include "parser.h"
 #include "process.h"
