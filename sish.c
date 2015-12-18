@@ -9,14 +9,6 @@
 
 #include "sish.h"
 
-void usage(){
-    fprintf(stdout,"sish [ −x] [ −c command]\n\
-            −c command\
-            Execute the given command.\n\
-            −x Enable tracing\n\
-            Write each command to standard error, preceeded by ’+’\n");
-    exit(EXIT_FAILURE);
-}
 
 
 int main(int argc, char ** argv) {

@@ -23,6 +23,5 @@ void prompt(Arg*arg){
         }
         arg->rawcommand=input;
         handle(arg);
-
     }
 }
